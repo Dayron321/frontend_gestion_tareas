@@ -11,6 +11,7 @@ function App() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [editingTask, setEditingTask] = useState(null);
+  const [editingTaskStatus, setEditingTaskStatus] = useState('');
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -53,6 +54,7 @@ function App() {
     setEditingTask(task);
     setNewTaskTitle(task.title);
     setNewTaskDescription(task.description);
+    setEditingTaskStatus(task.status);
   };
 
   const handleUpdateTask = async (e) => {
@@ -61,7 +63,7 @@ function App() {
       const updatedTask = {
         title: newTaskTitle,
         description: newTaskDescription,
-        status: editingTask.status,
+        status: editingTaskStatus,
         priority: editingTask.priority
       };
       const response = await axios.put(`${API_URL}/${editingTask.id}`, updatedTask);
@@ -69,6 +71,7 @@ function App() {
       setEditingTask(null);
       setNewTaskTitle('');
       setNewTaskDescription('');
+      setEditingTaskStatus('');
     } catch (err) {
       setError('Error al actualizar la tarea.');
     }
@@ -98,6 +101,16 @@ function App() {
           value={newTaskDescription}
           onChange={(e) => setNewTaskDescription(e.target.value)}
         ></textarea>
+        {editingTask && (
+          <select
+            value={editingTaskStatus}
+            onChange={(e) => setEditingTaskStatus(e.target.value)}
+          >
+            <option value="pendiente">Pendiente</option>
+            <option value="en_progreso">En Progreso</option>
+            <option value="completada">Completada</option>
+          </select>
+        )}
         <button type="submit">{editingTask ? 'Actualizar Tarea' : 'Añadir Tarea'}</button>
       </form>
 
